@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotspot Chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; background-color: #e5ddd5; display: flex; flex-direction: column; height: 100vh; }
+        
+        header { background: #075e54; color: white; padding: 15px; text-align: center; font-weight: bold; }
+
+        #messages { 
+            flex: 1; 
+            list-style-type: none; 
+            padding: 15px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* Message Bubbles */
+        li { 
+            max-width: 75%; 
+            padding: 8px 12px; 
+            margin-bottom: 8px; 
+            font-size: 15px; 
+            position: relative;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        /* ME (Sent) - Right Side */
+        .sent { 
+            align-self: flex-end; 
+            background-color: #dcf8c6; 
+            border-radius: 10px 10px 0 10px; 
+        }
+
+        /* GUEST (Received) - Left Side */
+        .received { 
+            align-self: flex-start; 
+            background-color: white; 
+            border-radius: 10px 10px 10px 0; 
+        }
+
+        .label { font-size: 10px; font-weight: bold; display: block; margin-bottom: 2px; color: #555; }
+
+        #form-container { background: #f0f0f0; padding: 10px; display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+        button { background: #128c7e; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>Hotspot Chat</header>
+    <ul id="messages"></ul>
+
+    <div id="form-container">
+        <input id="input" autocomplete="off" placeholder="Type a message..." />
+        <button onclick="send()">Send</button>
+    </div>
+
+    <script>
+        var socket = io();
+        var input = document.getElementById('input');
+        var messageList = document.getElementById('messages');
+
+        function send() {
+            if (input.value) {
+                // We send the message AND our socket ID
+                socket.emit('chat message', { text: input.value, id: socket.id });
+                input.value = '';
+            }
+        }
+
+        socket.on('chat message', function(data) {
+            var item = document.createElement('li');
+            
+            // Check if the ID of the sender is MY ID
+            if (data.id === socket.id) {
+                item.className = 'sent';
+                item.innerHTML = `${data.text}`;
+            } else {
+                item.className = 'received';
+                item.innerHTML = `${data.text}`;
+            }
+
+            messageList.appendChild(item);
+            messageList.scrollTop = messageList.scrollHeight;
+        });
+
+        input.addEventListener("keypress", (e) => { if(e.key === "Enter") send(); });
+    </script>
+</body>
+</html>
