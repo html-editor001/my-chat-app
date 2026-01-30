@@ -214,7 +214,38 @@ header {
             document.getElementById('messages').appendChild(item);
             document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
         }
+const input = document.getElementById('input');
+const onlineBadge = document.getElementById('online-count');
+let typingTimeout;
 
+// 1. Send "Typing" status to server
+input.addEventListener('keypress', () => {
+    socket.emit('typing', { name: userName, isTyping: true });
+    
+    // Stop showing "typing" after 2 seconds of no keys
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        socket.emit('typing', { name: userName, isTyping: false });
+    }, 2000);
+});
+
+// 2. Listen for other users typing
+socket.on('typing', (data) => {
+    const originalText = onlineBadge.getAttribute('data-count') || "Online";
+    if (data.isTyping) {
+        onlineBadge.innerHTML = `<span class="typing-text">${data.name} is typing...</span>`;
+    } else {
+        // Reset to user count
+        socket.emit('request count'); // Optional: just refresh count
+    }
+});
+
+// Update the user count listener to save the "default" state
+socket.on('user count', count => {
+    const text = count + " Online";
+    onlineBadge.setAttribute('data-count', text);
+    onlineBadge.innerText = text;
+});
         document.getElementById('input').addEventListener("keypress", (e) => { if(e.key === "Enter") send(); });
     </script>
 </body>
