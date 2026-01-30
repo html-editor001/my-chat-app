@@ -24,6 +24,29 @@
             --text-color: #e9edef;
             --input-bg: #2a3942;
         }
+
+        
+
+/* Focus Rule for the Input Box */
+input:focus {
+    border: 2px solid #128c7e; /* WhatsApp Green */
+    background: white;
+    padding-left: 20px;
+    box-shadow: 0 0 8px rgba(18, 140, 126, 0.3);
+}
+
+/* Typing Indicator Styling */
+.typing-text {
+    font-style: italic;
+    color: #afffd5;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
 /* ... (Keep previous root variables) ... */
 
 header { 
