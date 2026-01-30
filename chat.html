@@ -233,7 +233,7 @@ header {
             document.getElementById('messages').appendChild(item);
             document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
         }
-        const input = document.getElementById('input');
+        /*const input = document.getElementById('input');
 const onlineBadge = document.getElementById('online-count');
 let typingTimeout;
 
@@ -264,7 +264,7 @@ socket.on('user count', count => {
     const text = count + " Online";
     onlineBadge.setAttribute('data-count', text);
     onlineBadge.innerText = text;
-});
+});*/
         document.getElementById('input').addEventListener("keypress", (e) => { if(e.key === "Enter") send(); });
     </script>
 </body>
