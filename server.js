@@ -23,7 +23,8 @@ io.on('connection', (socket) => {
         io.emit('user count', onlineUsers);
     });
 });
-
+socket.on('typing', (data) =>{
+    socket.broadcast.emit('typing',data);});
 const PORT = process.env.PORT || 8000;
 http.listen(PORT, '0.0.0.0', () => {
     console.log(`Server live on port ${PORT}`);
